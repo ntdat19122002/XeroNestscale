@@ -6,8 +6,10 @@
     'sequence':-99,
     'summary': 'Product management system',
     'description': """Product management system""",
-    'depends': [],
-    'data':[],
+    'depends': ['portal'],
+    'data':[
+        'views/app.xml'
+    ],
     'demo': [],
     'application': True,
     'auto_install': False,

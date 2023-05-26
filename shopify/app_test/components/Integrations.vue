@@ -1,0 +1,157 @@
+<template>
+    <div class="integrations">
+        <div class="content">
+            <div class="welcome">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>
+                    Let integrate your shop with us!
+                </span>
+            </div>
+            <div class="input">
+                <input v-model="url" type="text" placeholder="Want manage you shopify app easily? Paste your url shop here!">
+                <div @click="integrate" class="integrate-btn">Integrate</div>
+            </div>
+            <div v-for="shop in shops" class="integrated-shop">
+                <div  class="integrated-shop-name">
+                    {{shop.name}}
+                </div>
+                <div @click="disintegrate(shop.name)" class="disintegrate-btn">
+                    X
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+    data(){
+      return{
+          url:'',
+          shops: []
+      }
+    },
+    methods:{
+        integrate(){
+            axios.post('https://odoo.website/api/integrate',{
+                jsonrpc:2.0,
+                params:{
+                    url:this.url
+                }
+            })
+            .then(async ()=>{
+                await this.shops.push({'name':this.url})
+                await console.log(this.shops)
+                this.url = ''
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        disintegrate(shop){
+            axios.post('https://odoo.website/api/disintegrate',{
+                jsonrpc:2.0,
+                params:{
+                    url: shop
+                }
+            })
+            .then((res)=>{
+                this.shops.splice(this.shops.indexOf(shop),1)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+    },
+    mounted() {
+        axios.get('https://odoo.website/api/integrate/ui',)
+            .then(response => this.shops = response.data)
+            .catch(err => console.log(err))
+    }
+}
+</script>
+
+<style>
+    .fa-cart-shopping{
+        font-size: 150px;
+        color: #c1c1c1;
+    }
+    .integrations{
+        justify-content: center;
+        display: flex;
+    }
+
+    .content{
+        width: 60%;
+    }
+
+    .welcome{
+        margin-top: 140px;
+        padding: 10px 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .welcome span{
+        letter-spacing: -1px;
+        font-style: italic;
+        padding-left: 40px;
+        font-weight: 200;
+        font-size: 2.2em;
+    }
+
+    .input{
+        position: relative;
+        margin-top: 50px;
+    }
+
+    .integrations input{
+        font-size: 20px;
+        border-color: #00000038;
+        padding: 10px 124px 10px 40px;
+        border-radius: 32px;
+        width: 100%;
+    }
+
+    .integrations input:focus-visible{
+        outline: none;
+    }
+
+    .integrate-btn{
+        font-size: 16px;
+        padding: 11px 20px;
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        border-radius: 30px;
+        background: #815656;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+    }
+
+    .integrated-shop{
+        display: flex;
+        margin-top: 20px;
+    }
+
+    .integrated-shop-name{
+        border-radius: 26px;
+        padding: 10px;
+        background: green;
+        color: white;
+        width: fit-content;
+    }
+
+    .disintegrate-btn{
+        margin-top: 10px;
+        font-weight: 900;
+        margin-left: 10px;
+        font-size: larger;
+        color: #b93535;
+        cursor: pointer;
+    }
+</style>
