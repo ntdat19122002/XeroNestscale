@@ -12,7 +12,7 @@
     <div v-else-if="url == 'https://odoo.website/apps/shopify/xero'">
         <Xero/>
     </div>
-    <div v-else-if="url == 'https://odoo.website/apps/shopify/bundle'">
+    <div v-else-if="url == 'https://odoo.website/apps/shopify/bundle' || url == 'https://odoo.website/apps/shopify/product'">
         <Bundle/>
     </div>
     <div v-else-if="url == 'https://odoo.website/apps/shopify/analytic'">

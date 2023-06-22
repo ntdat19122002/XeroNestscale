@@ -1,30 +1,49 @@
 <template>
   <div class="fetch">
+      <div class="fetch-title">
+        Fetch
+      </div>
       <div>
           <label for="start">Start date:</label>
           <input type="date" id="start" name="trip-start"
-                 value="2018-07-22">
+                 v-model="start_date">
 
           <label for="end">End date:</label>
-          <input type="date" id="end" name="trip-start"
-                 value="2018-07-22">
+          <input type="date" id="end" name="trip-end"
+                 v-model="end_date">
 
           <div class="fetch-btn" @click="fetch">Fetch</div>
       </div>
-      <div v-for="fetch in fetchs[0]">
-          {{fetch}}
+      <div v-if="fetchs">
+        {{fetchs}}
       </div>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import {DateRangePickerComponent} from "@syncfusion/ej2-vue-calendars";
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
 export default {
     data(){
         return{
-          fetchs:[]
+          fetchs:null,
+          start_date: formatDate(new Date().setDate(new Date().getDate() - 30)),
+          end_date: formatDate(new Date())
         }
     },
     components:{
@@ -33,9 +52,15 @@ export default {
         fetch(){
             axios.post('/apps/fetch',{
                     jsonrpc:2.0,
-                    params:{}
+                    params:{
+                        start_date:this.start_date,
+                        end_date:this.end_date
+                    }
                 })
-                .then(reponse => this.fetchs = reponse.data)
+                .then(response => {
+                  this.fetchs = response.data
+                  // this.fetchs = JSON.parse(response.data.result)
+                })
                 .catch(err => {
                     console.log(err)
                 })
@@ -47,6 +72,15 @@ export default {
 <style scoped>
     .fetch{
         margin: 60px 20% 0;
+    }
+    .fetch-title{
+      display: flex;
+        font-size: 50px;
+        justify-content: center;
+        font-weight: 600;
+        font-style: italic;
+        color: #707070;
+        letter-spacing: 5px;
     }
     input[type="date"] {
       width: 30%;

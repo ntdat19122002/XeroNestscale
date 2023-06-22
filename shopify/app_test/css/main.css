@@ -1,3 +1,11 @@
 #app-id a{
     color:black;
 }
+
+.flex{
+    display: flex;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

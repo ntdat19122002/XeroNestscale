@@ -1,6 +1,9 @@
 <template>
   <div class="auth">
-      <div @click="logout" class="logout">
+      <div class="auth-item">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div @click="logout" class="auth-item">
           Logout
       </div>
   </div>
@@ -19,12 +22,19 @@ export default {
 </script>
 
 <style>
-  .logout{
+  .auth{
+    display: flex;
+  }
+  .auth-item{
       font-size: 20px;
       padding: 10px 30px;
       cursor: pointer;
   }
   a{
       color:white !important;
+  }
+  i{
+    display: flex;
+    align-items: center;
   }
 </style>

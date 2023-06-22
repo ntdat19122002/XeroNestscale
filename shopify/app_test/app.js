@@ -13,4 +13,3 @@ var app = createApp({
 
 app.use(store)
 app.mount('#app-id')
-

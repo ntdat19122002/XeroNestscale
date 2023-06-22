@@ -7,13 +7,17 @@
                     Let integrate your shop with us!
                 </span>
             </div>
+            <div>
+              <h2>Connect to Shopify</h2>
+              <p>Your store name is in the form: https://<strong>mystore</strong>, so you would input "mystore" to connect.</p>
+            </div>
             <div class="input">
-                <input v-model="url" type="text" placeholder="Want manage you shopify app easily? Paste your url shop here!">
+                <input v-model="url" type="text" placeholder="Want manage you shopify app easily? Paste your store here!">
                 <div @click="integrate" class="integrate-btn">Integrate</div>
             </div>
             <div v-for="shop in shops" class="integrated-shop">
                 <div  class="integrated-shop-name">
-                    {{shop.name}}
+                    {{shop.name}} <i @click="refreshWebhook(shop.name)" class="fa-solid fa-arrows-rotate cursor-pointer"></i> <i @click="refreshScriptTag(shop.name)" class="fa-regular fa-flag cursor-pointer"></i>
                 </div>
                 <div @click="disintegrate(shop.name)" class="disintegrate-btn">
                     X
@@ -25,7 +29,7 @@
 
 <script>
 import axios from "axios";
-
+import { notification } from 'ant-design-vue';
 export default {
     data(){
       return{
@@ -35,7 +39,7 @@ export default {
     },
     methods:{
         integrate(){
-            axios.post('https://odoo.website/api/integrate',{
+            axios.post('/api/integrate',{
                 jsonrpc:2.0,
                 params:{
                     url:this.url
@@ -51,7 +55,7 @@ export default {
             })
         },
         disintegrate(shop){
-            axios.post('https://odoo.website/api/disintegrate',{
+            axios.post('/api/disintegrate',{
                 jsonrpc:2.0,
                 params:{
                     url: shop
@@ -64,6 +68,48 @@ export default {
                 console.log(err)
             })
         },
+        refreshWebhook(shop){
+          axios.post('/api/refresh_webhook',{
+                jsonrpc:2.0,
+                params:{
+                  url: shop
+                }
+            })
+            .then(() => {
+              notification.open({
+                message: 'Refresh webhook',
+                description:
+                  'Your webhook has refreshed successfully',
+                onClick: () => {
+                  console.log('Notification Clicked!');
+                },
+              });
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        },
+        refreshScriptTag(shop){
+          axios.post('/api/refresh_script_tag',{
+                jsonrpc:2.0,
+                params:{
+                  url: shop
+                }
+            })
+            .then(() => {
+              notification.open({
+                message: 'Refresh script tag',
+                description:
+                  'Your script tag has refreshed successfully',
+                onClick: () => {
+                  console.log('Notification Clicked!');
+                },
+              });
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        }
     },
     mounted() {
         axios.get('https://odoo.website/api/integrate/ui',)
@@ -88,7 +134,7 @@ export default {
     }
 
     .welcome{
-        margin-top: 140px;
+        margin: 140px 0 50px;
         padding: 10px 50px;
         display: flex;
         justify-content: center;
@@ -105,7 +151,6 @@ export default {
 
     .input{
         position: relative;
-        margin-top: 50px;
     }
 
     .integrations input{
@@ -144,6 +189,9 @@ export default {
         background: green;
         color: white;
         width: fit-content;
+    }
+    .integrated-shop-name i{
+      margin-left: 10px;
     }
 
     .disintegrate-btn{

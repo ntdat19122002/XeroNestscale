@@ -4,16 +4,19 @@
           <span v-if="connected">
               Connected
           </span>
+          <span v-else>
+              Disconnect
+          </span>
       </div>
       <button @click="connectXero" class="connect-xero-btn">Connect Xero</button>
       <div class="xero-fetch">
           <label for="start">Start date:</label>
           <input type="date" id="start" name="trip-start"
-                 value="2018-07-22">
+                 v-model="start_date">
 
           <label for="end">End date:</label>
           <input type="date" id="end" name="trip-start"
-                 value="2018-07-22">
+                 v-model="end_date">
 
           <div class="fetch-btn" @click="fetch">Fetch</div>
       </div>
@@ -23,16 +26,32 @@
 <script>
 import axios from "axios";
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 export default {
     data(){
         return{
-            connected: false
+            connected: false,
+            start_date: formatDate(new Date().setDate(new Date().getDate() - 30)),
+            end_date: formatDate(new Date())
         }
     },
     methods:{
         connectXero(){
-            axios.get('/xero/auth2',)
-              .then(response => console.log('ok'))
+            axios.get('/xero/auth2')
+              .then(response => window.location.href=response.data)
               .catch(err => console.log(err.response.data))
         }
     },
